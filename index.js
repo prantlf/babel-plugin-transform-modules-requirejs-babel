@@ -112,10 +112,15 @@
       }
     }
 
-    var buildAnonymousAmdModule = template('\n' +
+    var buildAmdModuleWithImports = template('\n' +
 'define(IMPORT_PATHS, function(IMPORT_VARS) {\n' +
 '  "use strict";\n' +
 '  NAMED_IMPORTS;\n' +
+'  BODY;\n' +
+'});\n');
+    var buildAmdModuleWithoutImports = template('\n' +
+'define(function() {\n' +
+'  "use strict";\n' +
 '  BODY;\n' +
 '});\n');
     var buildObjectCopyLoop = template('\n' +
@@ -138,8 +143,8 @@
       var isOnlyDefaultExport = true;
 
       var i, statement, exportStat, specifiers, declaration, funcNode, classNode,
-          className, importVar, importNode, asName, exportValue, needExportExpression,
-          varNode, asName, forIn, returnStatement;
+          className, importVar, importNode, asName, exportValue, exportSource,
+          needExportExpression, varNode, forIn, returnStatement;
 
       for (i = 0; i < bodyLen; ++i) {
         statement = body[i];
@@ -147,14 +152,14 @@
         // import
         if (statement.isImportDeclaration()) {
           // save import path
-          importPaths.push(statement.node.source);
+          exportSource = statement.node.source;
+          importPaths.push(exportSource);
 
           importNode = statement.node;
           // import "some"
           if (isAnonymousImport(importNode)) {
             // importVars.length should be equal importPaths.length
-            importVar = statement.scope.generateUidIdentifier(
-              statement.node.source.value);
+            importVar = statement.scope.generateUidIdentifier(exportSource.value);
             importVars.push(importVar);
           }
           // import some from "some"
@@ -166,8 +171,7 @@
           // import {x, y, z} from "xyz"
           else {
             // convert "/path/to/a" to _pathToA
-            asName = statement.scope.generateUidIdentifier(
-              statement.node.source.value);
+            asName = statement.scope.generateUidIdentifier(exportSource.value);
             importVars.push(asName);
 
             importNode.specifiers.forEach(function (args) {
@@ -285,7 +289,7 @@
           } else { // export {x as y}
             specifiers.forEach(function (specifier) {
               asName = specifier.exported.name;
-              if (asName != 'default') {
+              if (asName !== 'default') {
                 isOnlyDefaultExport = false;
               }
 
@@ -293,7 +297,38 @@
               program.pushContainer('body', [exportStat]);
             });
 
-            statement.remove();
+            // export { ... } from "module"
+            exportSource = statement.node.source;
+            if (exportSource) {
+              // save import path
+              importPaths.push(exportSource);
+              // importVars.length should be equal importPaths.length
+              importVar = statement.scope.generateUidIdentifier(exportSource.value);
+              importVars.push(importVar);
+
+              specifiers.forEach(function (args) {
+                var exported = args.exported;
+                var local = args.local;
+                namedImports.push(
+                  types.variableDeclaration('var', [
+                    types.variableDeclarator(
+                      types.identifier(local.name),
+                      types.memberExpression(
+                        types.identifier(importVar.name),
+                        types.identifier(exported.name))
+                    )
+                  ])
+                );
+              });
+
+              forIn = buildObjectCopyLoop({
+                SOURCE: importVar,
+                TARGET: exportsVar
+              });
+              statement.replaceWith(forIn);
+            } else {
+              statement.remove();
+            }
           }
         }
 
@@ -304,9 +339,10 @@
           needReturnExport = true;
 
           // save import path
-          importPaths.push(statement.node.source);
+          exportSource = statement.node.source;
+          importPaths.push(exportSource);
           // importVars.length should be equal importPaths.length
-          importVar = statement.scope.generateUidIdentifier(statement.node.source.value);
+          importVar = statement.scope.generateUidIdentifier(exportSource.value);
           importVars.push(importVar);
 
           forIn = buildObjectCopyLoop({
@@ -318,44 +354,44 @@
       }
 
       // adding define wrapper
-      if (importPaths.length || hasExport) {
-        if (hasExport && needReturnExport) {
-          // var _exports = {};
-          program.unshiftContainer('body', [
-            types.variableDeclaration('var', [
-              types.variableDeclarator(exportsVar, types.objectExpression([]))
-            ])
-          ]);
+      if (hasExport && needReturnExport) {
+        // var _exports = {};
+        program.unshiftContainer('body', [
+          types.variableDeclaration('var', [
+            types.variableDeclarator(exportsVar, types.objectExpression([]))
+          ])
+        ]);
 
-          // return <expression>;
-          if (isOnlyDefaultExport) {
-            // return _exports.default;
-            returnStatement = types.returnStatement(
-              types.memberExpression(exportsVar, types.identifier('default'))
-            );
-          }
-          else {
-            // return _exports;
-            returnStatement = types.returnStatement(exportsVar);
-          }
-
-          program.pushContainer('body', [returnStatement]);
+        // return <expression>;
+        if (isOnlyDefaultExport) {
+          // return _exports.default;
+          returnStatement = types.returnStatement(
+            types.memberExpression(exportsVar, types.identifier('default'))
+          );
+        }
+        else {
+          // return _exports;
+          returnStatement = types.returnStatement(exportsVar);
         }
 
-        buildAmdModule(program, meta, importPaths, importVars, namedImports);
+        program.pushContainer('body', [returnStatement]);
       }
+
+      buildAmdModule(program, meta, importPaths, importVars, namedImports);
     }
 
     // Wraps a program body of statements into an AMD module.
     function buildAmdModule(program, meta, importPaths, importVars, namedImports) {
-      var templateValues = {
-        IMPORT_PATHS: prepareImportPaths(meta, importPaths),
-        IMPORT_VARS: importVars,
-        BODY: program.node.body,
-        NAMED_IMPORTS: namedImports
-      };
-
-      program.node.body = [buildAnonymousAmdModule(templateValues)];
+      program.node.body = [importPaths.length ?
+        buildAmdModuleWithImports({
+          IMPORT_PATHS: prepareImportPaths(meta, importPaths),
+          IMPORT_VARS: importVars,
+          BODY: program.node.body,
+          NAMED_IMPORTS: namedImports
+        }) :
+        buildAmdModuleWithoutImports({
+          BODY: program.node.body
+        })];
     }
 
     // Update dependency paths to be prefixed by `es6!` or otherwise updated.
