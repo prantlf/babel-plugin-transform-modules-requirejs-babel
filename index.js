@@ -401,13 +401,15 @@
       var parentName = meta.file.opts.sourceFileName;
       var i, len, importPath, moduleName, newModuleName;
 
-      for (i = 0, len = importPaths.length; i < len; ++i) {
-        importPath = importPaths[i];
-        if (importPath.type === 'StringLiteral') {
-          moduleName = importPath.value;
-          newModuleName = resolvePath(moduleName, parentName, options);
-          if (newModuleName) {
-            importPath.value = newModuleName;
+      if (resolvePath) {
+        for (i = 0, len = importPaths.length; i < len; ++i) {
+          importPath = importPaths[i];
+          if (importPath.type === 'StringLiteral') {
+            moduleName = importPath.value;
+            newModuleName = resolvePath(moduleName, parentName, options);
+            if (newModuleName) {
+              importPath.value = newModuleName;
+            }
           }
         }
       }
