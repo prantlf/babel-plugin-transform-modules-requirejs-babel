@@ -1,0 +1,62 @@
+{
+  "name": "babel-plugin-transform-modules-requirejs-babel",
+  "version": "0.0.1",
+  "description": "A Babel plugin transforming ESM modules to AMD modules for processing by RequireJS with the requirejs-babel7 plugin.",
+  "author": {
+    "name": "Ferdinand Prantl",
+    "email": "prantlf@gmail.com",
+    "url": "http://prantl.tk"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/blob/master/LICENSE"
+    }
+  ],
+  "homepage": "https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/issues"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "eslint index.js"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      ["@semantic-release/github", { "failComment": false }],
+      "@semantic-release/git"
+    ]
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "eslint": "^8.6.0"
+  },
+  "keywords": [
+    "babel-plugin",
+    "module",
+    "transform",
+    "babel",
+    "plugin",
+    "requirejs",
+    "requirejs-babel",
+    "requirejs-babel7",
+    "browser",
+    "amd"
+  ]
+}
