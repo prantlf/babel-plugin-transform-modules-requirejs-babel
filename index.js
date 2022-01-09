@@ -49,7 +49,7 @@
           arg = args[argIndex];
         }
         return (arg.isFunctionExpression() || arg.isObjectExpression()) &&
-          deps && { deps: deps };
+          { deps: deps };
       }
 
       // require([deps], success, error)
@@ -94,11 +94,17 @@
 
     // Updates dependency paths to be prefixed by `es6!` or otherwise updated.
     function updateAmdDeps(amd, meta) {
-      var parentName = meta.file.opts.sourceFileName;
       var options = meta.opts;
       var resolvePath = options.resolvePath;
-      var moduleRefs = amd.deps.get('elements');
-      var i, len, moduleRef, moduleName, newModuleName;
+      var deps, parentName, moduleRefs, i, len, moduleRef, moduleName, newModuleName;
+
+      if (!resolvePath) return;
+
+      deps = amd.deps;
+      if (!deps) return;
+
+      parentName = meta.file.opts.sourceFileName;
+      moduleRefs = deps.get('elements');
 
       for (i = 0, len = moduleRefs.length; i < len; ++i) {
         moduleRef = moduleRefs[i];
@@ -398,10 +404,11 @@
     function prepareImportPaths(meta, importPaths) {
       var options = meta.opts;
       var resolvePath = options.resolvePath;
-      var parentName = meta.file.opts.sourceFileName;
-      var i, len, importPath, moduleName, newModuleName;
+      var parentName, i, len, importPath, moduleName, newModuleName;
 
       if (resolvePath) {
+        parentName = meta.file.opts.sourceFileName;
+
         for (i = 0, len = importPaths.length; i < len; ++i) {
           importPath = importPaths[i];
           if (importPath.type === 'StringLiteral') {
