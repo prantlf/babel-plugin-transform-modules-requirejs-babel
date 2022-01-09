@@ -10,7 +10,7 @@ The built-in plugin for the AMD module transformation - [@babel/plugin-transform
 
 * Mixing ESM and AMD modules at any dependency level.
 * If an ESM module contains a single default export, it will be exported from the AMD module without wrapping to `{ default: ... }` to keep the compatibility. An AMD module can be rewritten to ESM and vice-versa anytime.
-* AMD module bundles with mutliple `define` statements are supported.
+* AMD module bundles with multiple `define` statements are recognised.
 
 ### Table of Contents
 
