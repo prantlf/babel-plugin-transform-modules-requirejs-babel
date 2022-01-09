@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-modules-requirejs-babel",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Babel plugin transforming ESM modules to AMD modules for processing by RequireJS with the requirejs-babel7 plugin.",
   "author": {
     "name": "Ferdinand Prantl",
@@ -38,7 +38,12 @@
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog",
       "@semantic-release/npm",
-      ["@semantic-release/github", { "failComment": false }],
+      [
+        "@semantic-release/github",
+        {
+          "failComment": false
+        }
+      ],
       "@semantic-release/git"
     ]
   },
