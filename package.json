@@ -27,10 +27,14 @@
   },
   "main": "index.js",
   "files": [
-    "index.js"
+    "index.js",
+    "cjs.js"
   ],
   "scripts": {
-    "test": "eslint index.js"
+    "prepare": "npm run build:index && npm run build:cjs",
+    "build:index": "cat src/umd-prolog.js src/body.js src/umd-epilog.js > index.js",
+    "build:cjs": "cat src/body.js src/cjs-epilog.js > cjs.js",
+    "test": "eslint src/body.js"
   },
   "release": {
     "plugins": [
@@ -50,7 +54,7 @@
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^8.6.0"
+    "eslint": "^8.8.0"
   },
   "keywords": [
     "babel-plugin",
