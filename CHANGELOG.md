@@ -1,3 +1,10 @@
+# [0.1.0](https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/compare/v0.0.4...v0.1.0) (2022-02-08)
+
+
+### Features
+
+* Add a CJS module to satisfy @babel/standalone in Node.js ([b0ca0d2](https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/commit/b0ca0d23cc7c14d887c9667555e7d4d025a6da07))
+
 ## [0.0.4](https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/compare/v0.0.3...v0.0.4) (2022-01-09)
 
 
