@@ -1,9 +1,0 @@
-env:
-  browser: true
-extends: 'eslint:recommended'
-globals:
-  define: readonly
-  require: readonly
-  exports: true
-parserOptions:
-  ecmaVersion: 5

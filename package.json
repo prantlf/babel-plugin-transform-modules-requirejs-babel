@@ -36,25 +36,10 @@
     "build:cjs": "cat src/body.js src/cjs-epilog.js > cjs.js",
     "test": "eslint src/body.js"
   },
-  "release": {
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      [
-        "@semantic-release/github",
-        {
-          "failComment": false
-        }
-      ],
-      "@semantic-release/git"
-    ]
-  },
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.1",
-    "@semantic-release/git": "^10.0.1",
-    "eslint": "^8.8.0"
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
+    "globals": "^16.1.0"
   },
   "keywords": [
     "babel-plugin",
