@@ -1,3 +1,9 @@
+# [0.2.0](https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/compare/v0.1.0...v0.2.0) (2025-05-14)
+
+## Features
+
+* Upgrade dependencies ([370c053](https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/commit/370c053eb77011b3e9c7a96e6c06471202ca8bd0))
+
 # [0.1.0](https://github.com/prantlf/babel-plugin-transform-modules-requirejs-babel/compare/v0.0.4...v0.1.0) (2022-02-08)
 
 

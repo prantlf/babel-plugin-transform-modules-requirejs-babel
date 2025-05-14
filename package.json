@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-modules-requirejs-babel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Babel plugin transforming ESM modules to AMD modules for processing by RequireJS with the requirejs-babel7 plugin.",
   "author": {
     "name": "Ferdinand Prantl",
